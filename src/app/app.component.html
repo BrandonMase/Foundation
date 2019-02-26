@@ -1,20 +1,53 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
-</div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<div
+  [ngClass]="{ 'blur-container' : shouldAddNewTicket }"
+  class="container">
+  <div>
+    <div class="ticket-header">
+      <div
+        *ngFor="let header of headers;" 
+        class="ticket-header__column">{{ header.name | uppercase }}</div>
+        <div
+          (click)="createNewTicketForm()"
+          class="add-ticket">+</div>
+    </div>
 
+    <div
+      *ngFor="let ticket of tickets; let ticketIndex = index;" 
+      class="ticket-row">
+      <div
+        *ngFor="let header of headers; let i = index;" 
+        class="ticket-column">
+          <span *ngIf="i === 0">{{ boardInformation.boardTitle }}-{{ ticket.id }}</span>
+          <span 
+            [ngClass]="{ 'firstIndex': i === 0}"
+            (click)="i === 0 ? createNewTicketForm(ticketIndex) : ''">
+            {{ ticket.attributes[header.name] }}
+          </span>
+        </div>
+    </div>
+  </div>
+</div>
+<div
+  [ngStyle]="{ 
+    'animation': shouldAddNewTicket === false ? 'add-ticket-drawer-ani__hide .5s forwards' : '',
+    'display': shouldAddNewTicket !== null ? 'initial' : 'none'}"
+  *ngIf="shouldAddNewTicket !== null"
+  class="add-ticket-drawer">
+    <div>
+      {{ boardInformation.boardTitle + '-' + (boardInformation.lastIdCreated + 1) }}
+      <form [formGroup]="newTicketForm">
+      <div 
+        class="add-ticket-container" 
+        *ngFor="let prop of boardInformation.properties">
+        <div class="add-ticket-prop">
+          <label> {{ prop.name }}</label>
+          <input [formControlName]="prop.name" *ngIf="prop.type === 'text'" />
+        </div>
+      </div>
+      <div class="btn-container">
+        <button (click)="addNewTicket()" type="submit" class="btn">Save</button>
+        <button (click)="clearNewTicketForm()" class="btn__ghost">Cancel</button>
+      </div>
+      </form>
+    </div>
+</div>
