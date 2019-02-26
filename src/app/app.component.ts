@@ -61,39 +61,52 @@ export class AppComponent {
     },
   ];
 
+  /** Sees if the add new ticket drawer should appear */
   public shouldAddNewTicket = null;
 
+  /** The new ticket form */
   public newTicketForm: FormGroup;
 
+  /** Init the newTicketForm */
   constructor() {
     this.newTicketForm = new FormGroup({});
-    this.newTicketForm.valueChanges.subscribe(
-      (res) => {
-        console.log(res);
-      }
-    )
   }
 
   /**
-   * Adds a new ticket to the ticket array.
+   * Adds a new ticket to the ticket array. Sets the new last id created. Clears the new ticket drawer.
    * @return `void`
    */
   public addNewTicket():void {
     let newTicket = { id: this.boardInformation.lastIdCreated+1, attributes: [] }
     newTicket.attributes = this.newTicketForm.value;
     this.tickets.push(newTicket);
+    this.boardInformation.lastIdCreated++;
     this.clearNewTicketForm();
   }
 
-  private startNewTicketDrawerAnimation(start: null | boolean, end: null | boolean) {
+  /**
+   * Transitions the animation of the new ticket drawer.
+   * @param start The starting position - `null or boolean`
+   * @param end The ending position - `null or bollean`
+   * @returns `void`
+   */
+  private startNewTicketDrawerAnimation(start: null | boolean, end: null | boolean, cb?: any):void {
     this.shouldAddNewTicket = start;
     setTimeout(() => {
       this.shouldAddNewTicket = end;
     }, 500)
   }
-
-  public createNewTicketForm(index: number) {
+  
+  /**
+   * Inits a new ticket form or inits a form with ticket information
+   * @param index The index of the ticket to populate the form with. - `number`
+   * @returns `void`
+   */
+  public createNewTicketForm(index?: number):void {
     this.shouldAddNewTicket = true;
+    this.newTicketForm = new FormGroup({});
+    //* If the index is undefined, init a blank form.
+    //* else init a form with the ticket information passed in from the index.
     if(index === undefined) {
       for(let i = 0; i < this.boardInformation.properties.length; i++) {
         let newFormControl = new FormControl('')
@@ -108,11 +121,17 @@ export class AppComponent {
         this.newTicketForm.addControl(attributes[i], newFormControl);
       }
     }
+
+   
   }
 
-  clearNewTicketForm() {
+  /**
+   * Removes the new ticket form and resets the form.
+   * @returns `void` 
+  */
+  clearNewTicketForm():void {
     this.startNewTicketDrawerAnimation(false, null);
-    this.newTicketForm.reset();
+    this.newTicketForm.reset()
   }
 
 
