@@ -1,0 +1,24 @@
+<div
+  [ngStyle]="{ 
+    'animation': shouldAddNewTicket === false ? 'add-ticket-drawer-ani__hide .5s forwards' : '',
+    'display': shouldAddNewTicket !== null ? 'initial' : 'none'}"
+  *ngIf="shouldAddNewTicket !== null"
+  class="add-ticket-drawer">
+    <div>
+      <form 
+        [formGroup]="newTicketForm">
+      <div 
+        class="add-ticket-container" 
+        *ngFor="let prop of properties">
+        <div *ngIf="doneInit" class="add-ticket-prop">
+          <label> {{ prop.name }}</label>
+          <input [formControlName]="prop.name" *ngIf="prop.type === 'text'" />
+        </div>
+      </div>
+      <div class="btn-container">
+        <button type="button" (click)="addNewTicket()" type="submit" class="btn">Save</button>
+        <button (click)="clearNewTicketForm()" class="btn__ghost">Cancel</button>
+      </div>
+      </form>
+    </div>
+</div>

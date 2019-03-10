@@ -3,51 +3,31 @@
   class="container">
   <div>
     <div class="ticket-header">
+      <div class="ticket-header__column firstIndex"></div>
       <div
-        *ngFor="let header of headers;" 
-        class="ticket-header__column">{{ header.name | uppercase }}</div>
+        *ngFor="let header of headers; let i = index" 
+        class="ticket-header__column {{ i === 0 ? 'titleDiv' : ''}}">{{ header.name | uppercase }}</div>
         <div
-          (click)="createNewTicketForm()"
+          (click)="createTicketForm()"
           class="add-ticket">+</div>
     </div>
 
-    <div
-      *ngFor="let ticket of tickets; let ticketIndex = index;" 
-      class="ticket-row">
-      <div
-        *ngFor="let header of headers; let i = index;" 
-        class="ticket-column">
-          <span *ngIf="i === 0">{{ boardInformation.boardTitle }}-{{ ticket.id }}</span>
-          <span 
-            [ngClass]="{ 'firstIndex': i === 0}"
-            (click)="i === 0 ? createNewTicketForm(ticketIndex) : ''">
-            {{ ticket.attributes[header.name] }}
-          </span>
-        </div>
-    </div>
+      <ticket
+        *ngFor="let ticket of tickets; let ticketIndex = index;"
+        [headers]="headers"
+        [ticket]="ticket"
+        [boardTitle]="boardInformation.boardTitle"
+        (updateTicket)="createTicketForm(ticketIndex)"
+      ></ticket>
+
   </div>
 </div>
-<div
-  [ngStyle]="{ 
-    'animation': shouldAddNewTicket === false ? 'add-ticket-drawer-ani__hide .5s forwards' : '',
-    'display': shouldAddNewTicket !== null ? 'initial' : 'none'}"
-  *ngIf="shouldAddNewTicket !== null"
-  class="add-ticket-drawer">
-    <div>
-      {{ boardInformation.boardTitle + '-' + (boardInformation.lastIdCreated + 1) }}
-      <form [formGroup]="newTicketForm">
-      <div 
-        class="add-ticket-container" 
-        *ngFor="let prop of boardInformation.properties">
-        <div class="add-ticket-prop">
-          <label> {{ prop.name }}</label>
-          <input [formControlName]="prop.name" *ngIf="prop.type === 'text'" />
-        </div>
-      </div>
-      <div class="btn-container">
-        <button (click)="addNewTicket()" type="submit" class="btn">Save</button>
-        <button (click)="clearNewTicketForm()" class="btn__ghost">Cancel</button>
-      </div>
-      </form>
-    </div>
-</div>
+
+<new-ticket-drawer
+  *ngIf="shouldAddNewTicket"
+  [shouldAddNewTicket]="shouldAddNewTicket"
+  [ticket]="newTicket"
+  [properties]="boardInformation.properties"
+  (addTicket)="addTicket($event)"
+  (onClose)="shouldAddNewTicket = false"
+></new-ticket-drawer>

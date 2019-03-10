@@ -1,0 +1,15 @@
+<div class="ticket-row">
+<div 
+  class="ticket-column firstIndex"
+  (click)="editTicket()">
+    {{ boardTitle }}-{{ticket.id}}</div>
+<div
+  *ngFor="let header of headers; let i = index;"
+  class="ticket-column {{i === 0 ? 'titleDiv' : ''}}">
+  <text-input 
+    *ngIf="header.type === 'text'"
+    [value]="ticket.attributes[header.name]"
+    (onUpdate)="updateColumn(header.name, $event)">
+  </text-input>
+</div>
+</div>

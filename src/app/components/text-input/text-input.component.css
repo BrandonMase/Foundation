@@ -1,0 +1,16 @@
+div {
+    display:flex;
+    /* position: relative; */
+}
+
+input {
+    height: 100%;
+    /* position: absolute; */
+    background-color: transparent;
+    border: none;
+    min-width: 0px;
+    flex: 1;
+    white-space: none;
+    overflow:hidden;
+    text-overflow: ellipsis;
+}
